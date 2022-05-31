@@ -28,7 +28,7 @@ public class GetBalanceRequest extends Web3BasicRequest {
     @Override
     public void setupOtherData(JavaSamplerContext context) {
         Integer accountSize = context.getIntParameter(Constant.ACCOUNT_SIZE);
-        addressList = BlkSingleton.getSingletonAddressList(this.web3j,accountSize);
+        addressList = SingletonService.getSingletonAddressList(this.web3j,accountSize);
         this.defaultBlockParameterName = DefaultBlockParameterName.valueOf(context.getParameter(Constant.DefaultBlockParameterName));
     }
 

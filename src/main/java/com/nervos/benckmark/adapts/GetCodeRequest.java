@@ -1,6 +1,5 @@
 package com.nervos.benckmark.adapts;
 
-import com.nervos.benckmark.util.Web3Util;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.web3j.protocol.core.DefaultBlockParameter;
@@ -25,7 +24,7 @@ public class GetCodeRequest extends Web3BasicRequest {
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        this.contractAddress = BlkSingleton.getSingletonContractAddress(this.web3j, context.getIntParameter(Constant.SIZE));
+        this.contractAddress = SingletonService.getSingletonContractAddress(this.web3j, context.getIntParameter(Constant.SIZE));
         this.defaultBlockParameterName = context.getParameter(Constant.DefaultBlockParameterName);
     }
 

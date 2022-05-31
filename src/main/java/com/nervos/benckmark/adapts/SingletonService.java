@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BlkSingleton {
+public class SingletonService {
 
     private volatile static List<String> addressList;
     private volatile static  List<BlkMsg> blkMsgList;
@@ -27,6 +27,7 @@ public class BlkSingleton {
     private volatile static List<TxMsg> txMsgs;
     private volatile static List<String> sendAddressList;
     private volatile static List<Account> accountList;
+    private volatile static List<BEP20> bep20List;
     private volatile static BEP20 bep20;
     private volatile static BigInteger chainId;
 
@@ -34,10 +35,10 @@ public class BlkSingleton {
 
 
     public static List<String> getSingletonAddressList(Web3j web3j, Integer number) {
-        if (BlkSingleton.addressList == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.addressList== null) {
-                    BlkSingleton.addressList = Web3Util.getLatestSenderAddress(web3j,number);
+        if (SingletonService.addressList == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.addressList== null) {
+                    SingletonService.addressList = Web3Util.getLatestSenderAddress(web3j,number);
                 }
             }
         }
@@ -45,44 +46,81 @@ public class BlkSingleton {
     }
 
     public static List<BlkMsg> getSingletonBlkMsgList(Web3j web3j, Integer number){
-        if (BlkSingleton.blkMsgList == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.blkMsgList== null) {
-                    BlkSingleton.blkMsgList = getBlkMsgList(web3j,number);
+        if (SingletonService.blkMsgList == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.blkMsgList== null) {
+                    SingletonService.blkMsgList = getBlkMsgList(web3j,number);
                 }
             }
         }
-        return BlkSingleton.blkMsgList;
+        return SingletonService.blkMsgList;
     }
 
     public static List<String> getSingletonContractAddress(Web3j web3j,Integer number){
-        if (BlkSingleton.blkMsgList == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.blkMsgList== null) {
-                    BlkSingleton.contractAddress = Web3Util.getLatestContractAddress(web3j,number);
+        if (SingletonService.blkMsgList == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.blkMsgList== null) {
+                    SingletonService.contractAddress = Web3Util.getLatestContractAddress(web3j,number);
                 }
             }
         }
-        return BlkSingleton.contractAddress;
+        return SingletonService.contractAddress;
     }
 
     public static List<TxMsg> getSingletonTxList(Web3j web3j,Integer num){
-        if (BlkSingleton.txMsgs == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.txMsgs== null) {
-                    BlkSingleton.txMsgs = getTxList(web3j,num);
+        if (SingletonService.txMsgs == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.txMsgs== null) {
+                    SingletonService.txMsgs = getTxList(web3j,num);
                 }
             }
         }
-        return BlkSingleton.txMsgs;
+        return SingletonService.txMsgs;
+    }
+
+    public static List<BEP20> getSingletonBep20List(Web3j web3j,String rawPrivateKeys){
+        if (SingletonService.bep20List == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.bep20List== null) {
+                    SingletonService.bep20List = initBep20List(web3j,rawPrivateKeys);
+                }
+            }
+        }
+        return SingletonService.bep20List;
+    }
+
+    public static List<BEP20> initBep20List(Web3j web3j,String rawPrivateKeys){
+        List<Account> accountList;
+        BEP20 bep20;
+        List<BEP20> bep20List = new ArrayList<>();
+        try {
+            accountList = getAccountList(rawPrivateKeys);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("parse rawPrivateKeys failed");
+        }
+        try {
+            bep20 = initBEP20(accountList.get(0).getCredentials(),web3j,"",getChainId(web3j).intValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("deploy bep 20 failed");
+        }
+        for(Account account:accountList){
+            try {
+                bep20List.add(initBEP20(account.getCredentials(),web3j,bep20.getContractAddress(),getChainId(web3j).intValue()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return bep20List;
     }
 
     public static BigInteger getChainId(Web3j web3j){
-        if (BlkSingleton.chainId == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.chainId== null) {
+        if (SingletonService.chainId == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.chainId== null) {
                     try {
-                        BlkSingleton.chainId = web3j.ethChainId().send().getChainId();
+                        SingletonService.chainId = web3j.ethChainId().send().getChainId();
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException("ethChainId failed ");
@@ -90,14 +128,15 @@ public class BlkSingleton {
                 }
             }
         }
-        return BlkSingleton.chainId;
+        return SingletonService.chainId;
     }
 
     public static List<TxMsg> getTxList(Web3j web3j,Integer num){
         List<String> txHashs = Web3Util.getLatestTxHash(web3j, num);
         List<TxMsg> txMsgs = new ArrayList<>();
+        assert txHashs != null;
         for (String txHash : txHashs) {
-            Optional<Transaction> optionalTransaction = null;
+            Optional<Transaction> optionalTransaction;
             try {
                 optionalTransaction = web3j.ethGetTransactionByHash(txHash).send().getTransaction();
                 if (optionalTransaction.isPresent()) {
@@ -114,23 +153,23 @@ public class BlkSingleton {
     }
 
     public static List<String> getSingletonSendAddressList(Web3j web3j,Integer num){
-        if (BlkSingleton.sendAddressList == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.sendAddressList== null) {
-                    BlkSingleton.sendAddressList = Web3Util.getLatestSenderAddress(web3j,num);
+        if (SingletonService.sendAddressList == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.sendAddressList== null) {
+                    SingletonService.sendAddressList = Web3Util.getLatestSenderAddress(web3j,num);
                 }
             }
         }
-        return BlkSingleton.sendAddressList;
+        return SingletonService.sendAddressList;
 
     }
     public static List<Account> getSingletonAccountList(String rawPrivateKeys){
 
-        if (BlkSingleton.accountList == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.accountList== null) {
+        if (SingletonService.accountList == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.accountList== null) {
                     try {
-                        BlkSingleton.accountList = getAccountList(rawPrivateKeys);
+                        SingletonService.accountList = getAccountList(rawPrivateKeys);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("parse rawPrivateKeys failed");
@@ -138,15 +177,15 @@ public class BlkSingleton {
                 }
             }
         }
-        return BlkSingleton.accountList;
+        return SingletonService.accountList;
     }
 
     public static BEP20 getSingletonBEP20(Credentials credentials, Web3j web3j,String contractAddress,Integer chainId){
-        if (BlkSingleton.bep20 == null) {
-            synchronized (BlkSingleton.class) {
-                if ( BlkSingleton.bep20== null) {
+        if (SingletonService.bep20 == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.bep20== null) {
                     try {
-                        BlkSingleton.bep20 = initBEP20(credentials,web3j,contractAddress,chainId);
+                        SingletonService.bep20 = initBEP20(credentials,web3j,contractAddress,chainId);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("deploy failed");
@@ -154,7 +193,7 @@ public class BlkSingleton {
                 }
             }
         }
-        return BlkSingleton.bep20;
+        return SingletonService.bep20;
     }
 
     private static BEP20 initBEP20(Credentials credentials, Web3j web3j, String contractAddress,Integer chainId) throws Exception {
@@ -165,13 +204,12 @@ public class BlkSingleton {
         return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
     }
 
-    private static List<Account> getAccountList(String rawPrivateKeys) throws Exception {
+    private static List<Account> getAccountList(String rawPrivateKeys) {
         List<Account> accountList = new ArrayList<>();
         String[] privateKeys = rawPrivateKeys.split("\n");
 
         List<Credentials> credentials = getCredentialsList(privateKeys);
-        for (int i = 0; i < credentials.size(); i++) {
-            Credentials credentials1 = credentials.get(i);
+        for (Credentials credentials1 : credentials) {
             // todo : nonce update
             Account account = new Account(credentials1, new BigInteger("1"));
             accountList.add(account);
@@ -197,7 +235,7 @@ public class BlkSingleton {
         try {
             BigInteger blockHeight = web3j.ethBlockNumber().send().getBlockNumber();
 
-            Integer step = blockHeight.divide(new BigInteger(number.toString())).intValue();
+            int step = blockHeight.divide(new BigInteger(number.toString())).intValue();
             for (int i = 1; i < blockHeight.intValue(); i += step) {
                 BigInteger queryNum = new BigInteger(i + "");
                 String blkHash = web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(queryNum), false).send().getBlock().getHash();

@@ -25,7 +25,7 @@ public class GetTransactionByBlockNumberAndIndexRequest extends Web3BasicRequest
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        txMsgs = BlkSingleton.getSingletonTxList(web3j,context.getIntParameter(Constant.SIZE));
+        txMsgs = SingletonService.getSingletonTxList(web3j,context.getIntParameter(Constant.SIZE));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class GetTransactionByBlockNumberAndIndexRequest extends Web3BasicRequest
 
     @Override
     public boolean run(JavaSamplerContext context) {
-        Transaction tx = null;
+        Transaction tx;
         try {
             tx = this.web3j.ethGetTransactionByBlockNumberAndIndex(DefaultBlockParameterName.valueOf(currentTxMsg.getBlockNum().toString()), currentTxMsg.getIdx()).send().getTransaction().get();
             if (tx.getBlockNumber().compareTo(currentTxMsg.getBlockNum()) == 0

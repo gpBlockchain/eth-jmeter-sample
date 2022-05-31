@@ -1,15 +1,12 @@
 package com.nervos.benckmark.adapts;
 
 import com.nervos.benckmark.model.TxMsg;
-import com.nervos.benckmark.util.Web3Util;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.web3j.protocol.core.methods.response.Transaction;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class GetTransactionByBlockHashAndIndexRequest extends Web3BasicRequest {
 
@@ -26,7 +23,7 @@ public class GetTransactionByBlockHashAndIndexRequest extends Web3BasicRequest {
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        txMsgs = BlkSingleton.getSingletonTxList(this.web3j,context.getIntParameter(Constant.SIZE));
+        txMsgs = SingletonService.getSingletonTxList(this.web3j,context.getIntParameter(Constant.SIZE));
     }
 
     @Override
@@ -37,7 +34,7 @@ public class GetTransactionByBlockHashAndIndexRequest extends Web3BasicRequest {
 
     @Override
     public boolean run(JavaSamplerContext context) {
-        Transaction tx = null;
+        Transaction tx;
         try {
             tx = this.web3j.ethGetTransactionByBlockHashAndIndex(currentTxMsg.getBlkHash(), currentTxMsg.getIdx()).send().getTransaction().get();
             if (tx.getBlockNumber().compareTo(currentTxMsg.getBlockNum()) == 0

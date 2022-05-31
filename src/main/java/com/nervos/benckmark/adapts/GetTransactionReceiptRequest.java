@@ -25,7 +25,7 @@ public class GetTransactionReceiptRequest extends Web3BasicRequest {
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        txMsgs = BlkSingleton.getTxList(this.web3j, context.getIntParameter(Constant.SIZE));
+        txMsgs = SingletonService.getTxList(this.web3j, context.getIntParameter(Constant.SIZE));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class GetTransactionReceiptRequest extends Web3BasicRequest {
 
     @Override
     public boolean run(JavaSamplerContext context) {
-        TransactionReceipt receipt = null;
+        TransactionReceipt receipt;
         try {
             receipt = this.web3j.ethGetTransactionReceipt(currentTxMsg.getTxHash()).send().getTransactionReceipt().get();
             if (receipt.getBlockNumber().compareTo(currentTxMsg.getBlockNum()) == 0

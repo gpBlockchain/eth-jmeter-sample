@@ -8,7 +8,6 @@ import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 
-import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,17 +37,17 @@ public class ERC20TransferRequest extends Web3BasicRequest{
         System.out.println("------setupOtherData------");
         String privates = context.getParameter(Constant.PRIVATE_KEYS);
         String contractAddress = context.getParameter(Constant.ERC20_Address);
-        this.chainId = BlkSingleton.getChainId(this.web3j);
-        this.accountList = BlkSingleton.getSingletonAccountList(privates);
+        this.chainId = SingletonService.getChainId(this.web3j);
+        this.accountList = SingletonService.getSingletonAccountList(privates);
         //deploy contract
-        this.bep20 = BlkSingleton.getSingletonBEP20(this.accountList.get(0).getCredentials(),this.web3j,contractAddress,this.chainId.intValue());
+        this.bep20 = SingletonService.getSingletonBEP20(this.accountList.get(0).getCredentials(),this.web3j,contractAddress,this.chainId.intValue());
         System.out.println("contract address:"+this.bep20.getContractAddress());
     }
 
     @Override
     public void prepareRun(JavaSamplerContext context) {
         this.data = this.bep20.transfer(this.bep20.getContractAddress(),new BigInteger("0")).encodeFunctionCall();
-        Integer currentIdx = curSendIdx.getAndAdd(1) % this.accountList.size();
+        int currentIdx = curSendIdx.getAndAdd(1) % this.accountList.size();
         System.out.println("currentIdx:"+currentIdx);
         this.currentSendCredentials =  this.accountList.get(currentIdx).getCredentials();
     }

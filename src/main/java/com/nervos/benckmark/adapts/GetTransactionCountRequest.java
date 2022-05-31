@@ -1,6 +1,5 @@
 package com.nervos.benckmark.adapts;
 
-import com.nervos.benckmark.util.Web3Util;
 import org.apache.jmeter.config.Arguments;
 import org.apache.jmeter.protocol.java.sampler.JavaSamplerContext;
 import org.web3j.protocol.core.DefaultBlockParameterName;
@@ -29,7 +28,7 @@ public class GetTransactionCountRequest extends Web3BasicRequest{
     @Override
     public void setupOtherData(JavaSamplerContext context) {
         Integer accountSize = context.getIntParameter(Constant.ACCOUNT_SIZE);
-        this.addressList = BlkSingleton.getSingletonSendAddressList(this.web3j, accountSize);
+        this.addressList = SingletonService.getSingletonSendAddressList(this.web3j, accountSize);
         this.defaultBlockParameterName = DefaultBlockParameterName.valueOf(context.getParameter(Constant.DefaultBlockParameterName));
     }
 

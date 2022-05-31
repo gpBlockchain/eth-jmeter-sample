@@ -30,7 +30,7 @@ public class GetBlockByNumberRequest extends Web3BasicRequest{
     @Override
     public void setupOtherData(JavaSamplerContext context) {
         Integer size = context.getIntParameter(Constant.SIZE);
-        this.blkMsgList = BlkSingleton.getSingletonBlkMsgList(this.web3j,size);
+        this.blkMsgList = SingletonService.getSingletonBlkMsgList(this.web3j,size);
 
     }
 
@@ -42,7 +42,7 @@ public class GetBlockByNumberRequest extends Web3BasicRequest{
     @Override
     public boolean run(JavaSamplerContext context) {
 
-        EthBlock.Block block = null;
+        EthBlock.Block block;
         try {
             block = this.web3j.ethGetBlockByNumber(DefaultBlockParameter.valueOf(currentBlockMsg.getHeight()), isDetail).send().getBlock();
             if(block.getNumber().compareTo(currentBlockMsg.getHeight())==0 && block.getHash().equals(currentBlockMsg.getBlockHash())){

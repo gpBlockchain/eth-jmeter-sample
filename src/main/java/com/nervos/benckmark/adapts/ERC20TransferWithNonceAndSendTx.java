@@ -40,11 +40,11 @@ public class ERC20TransferWithNonceAndSendTx extends Web3BasicRequest {
     public void setupOtherData(JavaSamplerContext context) {
         String privates = context.getParameter(Constant.PRIVATE_KEYS);
         String contractAddress = context.getParameter(Constant.ERC20_Address);
-        this.chainId = BlkSingleton.getChainId(this.web3j);
+        this.chainId = SingletonService.getChainId(this.web3j);
 
-        this.accountList = BlkSingleton.getSingletonAccountList(privates);
+        this.accountList = SingletonService.getSingletonAccountList(privates);
         //deploy contract
-        this.bep20 = BlkSingleton.getSingletonBEP20(this.accountList.get(0).getCredentials(), this.web3j, contractAddress, this.chainId.intValue());
+        this.bep20 = SingletonService.getSingletonBEP20(this.accountList.get(0).getCredentials(), this.web3j, contractAddress, this.chainId.intValue());
         this.gasLimit = new BigInteger(context.getParameter(Constant.GasLimit));
         this.gasPrice = new BigInteger(context.getParameter(Constant.GasPrice));
     }
@@ -52,7 +52,7 @@ public class ERC20TransferWithNonceAndSendTx extends Web3BasicRequest {
     @Override
     public void prepareRun(JavaSamplerContext context) {
         this.data = this.bep20.transfer(this.bep20.getContractAddress(), new BigInteger("0")).encodeFunctionCall();
-        Integer currentIdx = curSendIdx.getAndAdd(1) % this.accountList.size();
+        int currentIdx = curSendIdx.getAndAdd(1) % this.accountList.size();
         System.out.println("currentIdx:" + currentIdx);
         this.currentSendCredentials = this.accountList.get(currentIdx).getCredentials();
     }

@@ -25,7 +25,7 @@ public class GetTransactionByHashRequest extends Web3BasicRequest{
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        txMsgs = BlkSingleton.getSingletonTxList(this.web3j,context.getIntParameter(Constant.SIZE));
+        txMsgs = SingletonService.getSingletonTxList(this.web3j,context.getIntParameter(Constant.SIZE));
 
     }
 
@@ -37,7 +37,7 @@ public class GetTransactionByHashRequest extends Web3BasicRequest{
 
     @Override
     public boolean run(JavaSamplerContext context) {
-        Transaction tx = null;
+        Transaction tx;
         try {
             tx = this.web3j.ethGetTransactionByHash(currentTxMsg.getTxHash()).send().getTransaction().get();
             if (tx.getBlockNumber().compareTo(currentTxMsg.getBlockNum()) == 0
