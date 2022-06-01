@@ -2,7 +2,7 @@
 Stress test the rpc interface of the eth chain by implementing `java request`
 
 ## require
-java8,maven
+java8,maven,linux or max(not support win)
 
 ## use
 1. mod rpcUrl
