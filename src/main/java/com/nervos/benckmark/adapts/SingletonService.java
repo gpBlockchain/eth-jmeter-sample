@@ -1,6 +1,7 @@
 package com.nervos.benckmark.adapts;
 
 import com.nervos.benckmark.contracts.BEP20;
+import com.nervos.benckmark.contracts.LogContract;
 import com.nervos.benckmark.model.Account;
 import com.nervos.benckmark.model.BlkMsg;
 import com.nervos.benckmark.model.TxMsg;
@@ -29,6 +30,7 @@ public class SingletonService {
     private volatile static List<Account> accountList;
     private volatile static List<BEP20> bep20List;
     private volatile static BEP20 bep20;
+    private volatile static LogContract logContract;
     private volatile static BigInteger chainId;
 
 
@@ -178,6 +180,31 @@ public class SingletonService {
             }
         }
         return SingletonService.accountList;
+    }
+
+    public static LogContract getSingletonLogContract(Credentials credentials,Web3j web3j,String contractAddress,Integer chainId){
+        if (SingletonService.logContract == null) {
+            synchronized (SingletonService.class) {
+                if ( SingletonService.logContract== null) {
+                    try {
+                        SingletonService.logContract = initLogContract(credentials,web3j,contractAddress,chainId);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("deploy failed");
+                    }
+                }
+            }
+        }
+        return SingletonService.logContract;
+    }
+
+    private static LogContract initLogContract(Credentials credentials, Web3j web3j, String contractAddress, Integer chainId) throws Exception{
+        RawTransactionManager cutomerTokenTxManager = TransactionUtil.getTxManage(web3j,credentials,chainId);
+        if (contractAddress.equals("")) {
+            return LogContract.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvider()).send();
+        }
+        return LogContract.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
+
     }
 
     public static BEP20 getSingletonBEP20(Credentials credentials, Web3j web3j,String contractAddress,Integer chainId){

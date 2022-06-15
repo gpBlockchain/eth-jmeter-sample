@@ -25,4 +25,7 @@ public class Constant {
     public static String GasPrice = "gasPrice";
     public static String GasLimit = "gasLimit";
 
+    //logContract
+    public static String LogLoopCount = "LogLoopCount";
+
 }
