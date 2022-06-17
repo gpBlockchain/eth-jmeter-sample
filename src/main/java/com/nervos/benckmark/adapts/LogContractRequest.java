@@ -31,7 +31,7 @@ public class LogContractRequest extends Web3BasicRequest {
         arguments.addArgument(Constant.ERC20_Address, "");
         arguments.addArgument(Constant.GasLimit, "1000000");
         arguments.addArgument(Constant.GasPrice, "10000");
-
+        arguments.addArgument(Constant.LogLoopCount,"10");
         return arguments;
     }
 
