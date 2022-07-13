@@ -5,6 +5,7 @@ import com.nervos.benckmark.contracts.LogContract;
 import com.nervos.benckmark.model.Account;
 import com.nervos.benckmark.model.BlkMsg;
 import com.nervos.benckmark.model.TxMsg;
+import com.nervos.benckmark.util.DefaultGasProvisder;
 import com.nervos.benckmark.util.TransactionUtil;
 import com.nervos.benckmark.util.Web3Util;
 import org.web3j.crypto.Credentials;
@@ -226,9 +227,9 @@ public class SingletonService {
     private static BEP20 initBEP20(Credentials credentials, Web3j web3j, String contractAddress,Integer chainId) throws Exception {
         RawTransactionManager cutomerTokenTxManager = TransactionUtil.getTxManage(web3j,credentials,chainId);
         if (contractAddress.equals("")) {
-            return BEP20.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvider()).send();
+            return BEP20.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvisder()).send();
         }
-        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
+        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvisder());
     }
 
     private static List<Account> getAccountList(String rawPrivateKeys) {
