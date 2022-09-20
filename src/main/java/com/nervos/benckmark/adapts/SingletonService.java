@@ -1,14 +1,17 @@
 package com.nervos.benckmark.adapts;
 
+import com.google.common.collect.ImmutableList;
 import com.nervos.benckmark.contracts.BEP20;
 import com.nervos.benckmark.contracts.LogContract;
 import com.nervos.benckmark.model.Account;
 import com.nervos.benckmark.model.BlkMsg;
 import com.nervos.benckmark.model.TxMsg;
-import com.nervos.benckmark.util.DefaultGasProvisder;
 import com.nervos.benckmark.util.TransactionUtil;
 import com.nervos.benckmark.util.Web3Util;
+import org.bitcoinj.crypto.*;
+import org.bitcoinj.wallet.DeterministicSeed;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.Transaction;
@@ -17,11 +20,16 @@ import org.web3j.tx.gas.DefaultGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 public class SingletonService {
+    private final static ImmutableList<ChildNumber> BIP44_ETH_ACCOUNT_ZERO_PATH =
+            ImmutableList.of(new ChildNumber(44, true), new ChildNumber(60, true),
+                    ChildNumber.ZERO_HARDENED, ChildNumber.ZERO);
 
     private volatile static List<String> addressList;
     private volatile static  List<BlkMsg> blkMsgList;
@@ -166,13 +174,13 @@ public class SingletonService {
         return SingletonService.sendAddressList;
 
     }
-    public static List<Account> getSingletonAccountList(String rawPrivateKeys){
+    public static List<Account> getSingletonAccountList(String hd,int size ){
 
         if (SingletonService.accountList == null) {
             synchronized (SingletonService.class) {
                 if ( SingletonService.accountList== null) {
                     try {
-                        SingletonService.accountList = getAccountList(rawPrivateKeys);
+                        SingletonService.accountList = getAccountListByHD(hd,size);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("parse rawPrivateKeys failed");
@@ -227,9 +235,37 @@ public class SingletonService {
     private static BEP20 initBEP20(Credentials credentials, Web3j web3j, String contractAddress,Integer chainId) throws Exception {
         RawTransactionManager cutomerTokenTxManager = TransactionUtil.getTxManage(web3j,credentials,chainId);
         if (contractAddress.equals("")) {
-            return BEP20.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvisder()).send();
+            return BEP20.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvider()).send();
         }
-        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvisder());
+        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
+    }
+
+    private static List<Account> getAccountListByHD(String mnstr,int size){
+
+        SecureRandom secureRandom = new SecureRandom();
+        byte[] entropy = new byte[DeterministicSeed.DEFAULT_SEED_ENTROPY_BITS / 8];
+        secureRandom.nextBytes(entropy);
+
+        //生成12位助记词
+        List<String> str = Arrays.asList(mnstr.split(" "));
+
+        //使用助记词生成钱包种子
+        byte[] seed = MnemonicCode.toSeed(str, "");
+        DeterministicKey masterPrivateKey = HDKeyDerivation.createMasterPrivateKey(seed);
+        DeterministicHierarchy deterministicHierarchy = new DeterministicHierarchy(masterPrivateKey);
+        List<Account> accountList = new ArrayList<>();
+
+        for (int i = 0; i < size; i++) {
+            DeterministicKey deterministicKey = deterministicHierarchy
+                    .deriveChild(BIP44_ETH_ACCOUNT_ZERO_PATH, false, true, new ChildNumber(i));
+            byte[] bytes = deterministicKey.getPrivKeyBytes();
+            ECKeyPair keyPair = ECKeyPair.create(bytes);
+            keyPair.getPrivateKey().toString(16);
+            Credentials credentials = Credentials.create("0x"+keyPair.getPrivateKey().toString(16));
+            accountList.add(new Account(credentials,new BigInteger("1")));
+
+        }
+        return accountList;
     }
 
     private static List<Account> getAccountList(String rawPrivateKeys) {

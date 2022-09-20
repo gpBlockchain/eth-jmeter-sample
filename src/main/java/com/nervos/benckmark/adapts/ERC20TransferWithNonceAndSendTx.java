@@ -27,8 +27,8 @@ public class ERC20TransferWithNonceAndSendTx extends Web3BasicRequest {
     @Override
     public Arguments getConfigArguments() {
         Arguments arguments = new Arguments();
-        arguments.addArgument(Constant.PRIVATE_KEYS, "0x723982bb19b3d9d36990fef21dbe88281bba7d67eb4ee85760d9566bcf9423d4\n" +
-                "0x5aa9c3c53a68651524730ca3843314edeeebb9ef3ed55d7f08263d006a407ad0");
+        arguments.addArgument(Constant.Mnemonic, Constant.DEFAULT_MNEMONIC);
+        arguments.addArgument(Constant.SIZE,"10");
         arguments.addArgument(Constant.ERC20_Address, "");
         arguments.addArgument(Constant.GasLimit, "1000000");
         arguments.addArgument(Constant.GasPrice, "10000");
@@ -38,11 +38,12 @@ public class ERC20TransferWithNonceAndSendTx extends Web3BasicRequest {
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        String privates = context.getParameter(Constant.PRIVATE_KEYS);
+        String privates = context.getParameter(Constant.Mnemonic);
+        int size = context.getIntParameter(Constant.SIZE);
         String contractAddress = context.getParameter(Constant.ERC20_Address);
         this.chainId = SingletonService.getChainId(this.web3j);
 
-        this.accountList = SingletonService.getSingletonAccountList(privates);
+        this.accountList = SingletonService.getSingletonAccountList(privates,size);
         //deploy contract
         this.bep20 = SingletonService.getSingletonBEP20(this.accountList.get(0).getCredentials(), this.web3j, contractAddress, this.chainId.intValue());
         this.gasLimit = new BigInteger(context.getParameter(Constant.GasLimit));

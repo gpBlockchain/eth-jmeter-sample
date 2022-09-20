@@ -26,8 +26,8 @@ public class LogContractRequest extends Web3BasicRequest {
     @Override
     public Arguments getConfigArguments() {
         Arguments arguments = new Arguments();
-        arguments.addArgument(Constant.PRIVATE_KEYS, "0x723982bb19b3d9d36990fef21dbe88281bba7d67eb4ee85760d9566bcf9423d4\n" +
-                "0x5aa9c3c53a68651524730ca3843314edeeebb9ef3ed55d7f08263d006a407ad0");
+        arguments.addArgument(Constant.Mnemonic, Constant.DEFAULT_MNEMONIC);
+        arguments.addArgument(Constant.SIZE,"100");
         arguments.addArgument(Constant.ERC20_Address, "");
         arguments.addArgument(Constant.GasLimit, "1000000");
         arguments.addArgument(Constant.GasPrice, "10000");
@@ -37,13 +37,16 @@ public class LogContractRequest extends Web3BasicRequest {
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        String privates = context.getParameter(Constant.PRIVATE_KEYS);
+        String mnstr = context.getParameter(Constant.Mnemonic);
+        System.out.println("nm str;"+mnstr);
         String contractAddress = context.getParameter(Constant.ERC20_Address);
+        int size= context.getIntParameter(Constant.SIZE);
         this.chainId = SingletonService.getChainId(this.web3j);
 
-        this.accountList = SingletonService.getSingletonAccountList(privates);
+        this.accountList = SingletonService.getSingletonAccountList(mnstr,size);
         //deploy contract
         this.logContract = SingletonService.getSingletonLogContract(this.accountList.get(0).getCredentials(), this.web3j, contractAddress, this.chainId.intValue());
+        System.out.println("logContract:"+this.logContract.getContractAddress());
         this.gasLimit = new BigInteger(context.getParameter(Constant.GasLimit));
         this.gasPrice = new BigInteger(context.getParameter(Constant.GasPrice));
         this.logLoopCount = new BigInteger(context.getParameter(Constant.LogLoopCount));
@@ -76,5 +79,27 @@ public class LogContractRequest extends Web3BasicRequest {
             return false;
         }
         return false;
+    }
+
+    public static void main(String[] args) {
+        LogContractRequest sample = new LogContractRequest();
+
+        Arguments arguments = sample.getConfigArguments();
+        arguments.addArgument(Constant.RPC_URL, "https://godwoken-alphanet-v1.ckbapp.dev");
+        arguments.addArgument(Constant.DEFAULT_PRIVATE_KEY,"0xdd50cac37ec6dd12539a968c1a2cbedda75bd8724f7bcad486548eaabb87fc8b");
+        arguments.addArgument(Constant.Mnemonic,Constant.DEFAULT_MNEMONIC);
+        arguments.addArgument(Constant.SIZE,"10");
+
+        arguments.addArgument(Constant.ERC20_Address, "");
+        System.out.println("!!!");
+        JavaSamplerContext context = new JavaSamplerContext(arguments);
+
+        sample.setupTest(context);
+        System.out.println("???");
+        for (int i = 0; i < 1000; i++) {
+            System.out.println("----");
+            sample.runTest(context);
+        }
+        sample.teardownTest(context);
     }
 }

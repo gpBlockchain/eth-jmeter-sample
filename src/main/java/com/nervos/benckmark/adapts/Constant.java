@@ -19,7 +19,9 @@ public class Constant {
     public static String SIZE = "size";
     public static String BLOCK_MSG_DETAIL = "blockMsgDetail";
 
-    public  static String PRIVATE_KEYS = "privateKeys";
+    public  static String Mnemonic = "Mnemonic";
+
+    public static String DEFAULT_MNEMONIC= "test test test test test test test test test test test junk";
     public static String ERC20_Address = "ERC20Address";
 
     public static String GasPrice = "gasPrice";
