@@ -1,4 +1,4 @@
-name: calphanet-bench
+name: alphanet-bench
 
 on:
   workflow_dispatch:
@@ -18,7 +18,7 @@ jobs:
           mvn clean package --file pom.xml
       - name: jmeter run
         run:
-          mvn jmeter
+          mvn jmeter:jmeter
       - name: Publish reports
         if: always()
         uses: actions/upload-artifact@v2
