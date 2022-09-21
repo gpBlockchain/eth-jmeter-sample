@@ -44,14 +44,13 @@ public abstract class Web3BasicRequest extends AbstractJavaSamplerClient {
         result = new SampleResult();
         String url = context.getParameter(Constant.RPC_URL);
         this.web3j = Web3Util.initWeb3j(url);
-        System.out.println("priv:"+context.getParameter(Constant.DEFAULT_PRIVATE_KEY));
-        this.credentials = Credentials.create(context.getParameter(Constant.DEFAULT_PRIVATE_KEY));
         setupOtherData(context);
     }
 
 
     @Override
     public void teardownTest(JavaSamplerContext context) {
+
         System.out.println("teardownTest");
     }
 

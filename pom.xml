@@ -19,7 +19,6 @@
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
         <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
         <html.report>true</html.report>
-
     </properties>
 
 
@@ -58,14 +57,23 @@
             <version>5.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>crypto</artifactId>
+            <version>5.0.0</version>
+        </dependency>
 
         <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>0.16.1</version>
-            <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15to18</artifactId>
+            <version>1.69</version>
+<!--            <scope>compile</scope>-->
+        </dependency>
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -184,7 +192,7 @@
                     </jmeterExtensions>
                     <propertiesUser>
                         <rpcUrl>${rpcUrl}</rpcUrl>
-                        <jmeter.reportgenerator.report_title>Shantonu Example</jmeter.reportgenerator.report_title>
+                        <jmeter.reportgenerator.report_title>Shan tonu Example</jmeter.reportgenerator.report_title>
                         <jmeter.reportgenerator.overall_granularity>500</jmeter.reportgenerator.overall_granularity>
                         <jmeter.reportgenerator.exporter.html.series_filter>^(-success|-failure)?$</jmeter.reportgenerator.exporter.html.series_filter>
                     </propertiesUser>
@@ -198,7 +206,7 @@
 <!--                    <testFilesExcluded>-->
 <!--                        <excludeJMeterTestFile>login*.jmx</excludeJMeterTestFile>-->
 <!--                    </testFilesExcluded>-->
-                    <resultsFileFormat>xml</resultsFileFormat>
+<!--                    <resultsFileFormat>xml</resultsFileFormat>-->
                     <ignoreResultFailures>true</ignoreResultFailures>
                     <generateReports>${html.report}</generateReports>
                 </configuration>

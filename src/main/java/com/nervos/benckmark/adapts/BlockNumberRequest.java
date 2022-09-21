@@ -27,6 +27,7 @@ public class BlockNumberRequest extends Web3BasicRequest {
 
     @Override
     public boolean run(JavaSamplerContext context) {
+
         try {
             BigInteger bigInteger = this.web3j.ethBlockNumber().send().getBlockNumber();
             if (bigInteger.compareTo(new BigInteger("0")) > 0) {
@@ -35,6 +36,8 @@ public class BlockNumberRequest extends Web3BasicRequest {
             return false;
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("failed:"+e);
+
         }
         return false;
     }

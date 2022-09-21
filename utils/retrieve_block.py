@@ -19,7 +19,7 @@ def get_block_number(gwa):
         new_number = gwa.eth.block_number
         if new_number != number:
             number = new_number
-            return number - 1
+            return number
         else:
             continue
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         blk = get_block(clt, number)
         # 解析block数据
         blokdata = parse_block(blk)
-        with open(r"./block.csv", 'a+', newline='') as file:
+        with open(r"./block.alphanet.csv", 'a+', newline='') as file:
             csv_file = csv.writer(file)
             csv_file.writerow(blokdata)
             file.close()

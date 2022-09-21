@@ -3,7 +3,7 @@ on:
     branches:
       - main
 
-name: Push to Amazon ECR
+name: ci
 
 jobs:
   build:

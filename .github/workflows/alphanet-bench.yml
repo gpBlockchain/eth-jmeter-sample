@@ -1,0 +1,27 @@
+name: calphanet-bench
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        run:
+          mvn clean package --file pom.xml
+      - name: jmeter run
+        run:
+          mvn jmeter
+      - name: Publish reports
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: jfoa-build-reports-${{ runner.os }}
+          path: target/jmeter
