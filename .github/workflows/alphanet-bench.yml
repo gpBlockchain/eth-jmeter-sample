@@ -16,9 +16,23 @@ jobs:
       - name: Build with Maven
         run:
           mvn clean package --file pom.xml
+      - name: Install Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.10'
+      - name: Install Dependencies
+          run: pip install Web3
+          shell: bash
+      - name: Start  Monit Block Message
+        - run: python utils/retrieve_block.py
+          shell: bash
       - name: jmeter run
         run:
           mvn jmeter:jmeter
+      - name: collect block message
+        run: |
+          cat block.csv
+          cp block.csv target/jmeter
       - name: Publish reports
         if: always()
         uses: actions/upload-artifact@v2
