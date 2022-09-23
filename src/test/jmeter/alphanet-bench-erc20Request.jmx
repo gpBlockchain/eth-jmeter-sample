@@ -29,12 +29,12 @@
         </elementProp>
       </kg.apc.jmeter.threads.SteppingThreadGroup>
       <hashTree>
-        <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="BlockNumberRequest" enabled="true">
+        <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="erc20" enabled="true">
           <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
             <collectionProp name="Arguments.arguments">
               <elementProp name="rpcUrl" elementType="Argument">
                 <stringProp name="Argument.name">rpcUrl</stringProp>
-                <stringProp name="Argument.value">https://godwoken-testnet-v1.ckbapp.dev</stringProp>
+                <stringProp name="Argument.value">https://godwoken-alphanet-v1.ckbapp.dev</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="default_private_key" elementType="Argument">
@@ -42,9 +42,39 @@
                 <stringProp name="Argument.value">0xd326ae3a6708b3f1ad08cefe5a429c313369a98e0a4533c5798be8458d405b31</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
+              <elementProp name="Mnemonic" elementType="Argument">
+                <stringProp name="Argument.name">Mnemonic</stringProp>
+                <stringProp name="Argument.value">test test test test test test test test test test test junk</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="size" elementType="Argument">
+                <stringProp name="Argument.name">size</stringProp>
+                <stringProp name="Argument.value">1000</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="ERC20Address" elementType="Argument">
+                <stringProp name="Argument.name">ERC20Address</stringProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="gasLimit" elementType="Argument">
+                <stringProp name="Argument.name">gasLimit</stringProp>
+                <stringProp name="Argument.value">1000000</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="gasPrice" elementType="Argument">
+                <stringProp name="Argument.name">gasPrice</stringProp>
+                <stringProp name="Argument.value">410000000000</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+              <elementProp name="LogLoopCount" elementType="Argument">
+                <stringProp name="Argument.name">LogLoopCount</stringProp>
+                <stringProp name="Argument.value">10</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="classname">com.nervos.benckmark.adapts.BlockNumberRequest</stringProp>
+          <stringProp name="classname">com.nervos.benckmark.adapts.LogContractRequest</stringProp>
         </JavaSampler>
         <hashTree/>
         <kg.apc.jmeter.vizualizers.CorrectedResultCollector guiclass="kg.apc.jmeter.vizualizers.ThreadsStateOverTimeGui" testclass="kg.apc.jmeter.vizualizers.CorrectedResultCollector" testname="jp@gc - Active Threads Over Time" enabled="true">

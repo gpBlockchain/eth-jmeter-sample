@@ -16,7 +16,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.tx.RawTransactionManager;
+import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.DefaultGasProvider;
+import org.web3j.tx.gas.StaticGasProvider;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -41,7 +43,7 @@ public class SingletonService {
     private volatile static BEP20 bep20;
     private volatile static LogContract logContract;
     private volatile static BigInteger chainId;
-
+    private static ContractGasProvider staticGasProvider = new StaticGasProvider(new BigInteger("10000000000"),new BigInteger("9000000"));
 
 
 
@@ -210,9 +212,9 @@ public class SingletonService {
     private static LogContract initLogContract(Credentials credentials, Web3j web3j, String contractAddress, Integer chainId) throws Exception{
         RawTransactionManager cutomerTokenTxManager = TransactionUtil.getTxManage(web3j,credentials,chainId);
         if (contractAddress.equals("")) {
-            return LogContract.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvider()).send();
+            return LogContract.deploy(web3j, cutomerTokenTxManager, staticGasProvider).send();
         }
-        return LogContract.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
+        return LogContract.load(contractAddress, web3j, cutomerTokenTxManager, staticGasProvider);
 
     }
 
@@ -235,9 +237,9 @@ public class SingletonService {
     private static BEP20 initBEP20(Credentials credentials, Web3j web3j, String contractAddress,Integer chainId) throws Exception {
         RawTransactionManager cutomerTokenTxManager = TransactionUtil.getTxManage(web3j,credentials,chainId);
         if (contractAddress.equals("")) {
-            return BEP20.deploy(web3j, cutomerTokenTxManager, new DefaultGasProvider()).send();
+            return BEP20.deploy(web3j, cutomerTokenTxManager, staticGasProvider).send();
         }
-        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, new DefaultGasProvider());
+        return BEP20.load(contractAddress, web3j, cutomerTokenTxManager, staticGasProvider);
     }
 
     private static List<Account> getAccountListByHD(String mnstr,int size){
