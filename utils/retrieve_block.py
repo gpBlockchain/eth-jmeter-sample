@@ -42,8 +42,8 @@ def parse_block(block):
     tps = 0
     if (block_number-1) in blockMsg.keys():
         tps = txn_count/(local_timep - blockMsg[block_number-1][1])
-    blockMsg[block_number] = [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps, txns]
-    return [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps, txns]
+    blockMsg[block_number] = [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps]
+    return [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps]
 
 
 def write_data(filaname, data_list):
