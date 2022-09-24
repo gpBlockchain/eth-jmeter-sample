@@ -10,6 +10,7 @@
 import csv
 from web3 import Web3
 import time
+import sys
 
 blockMsg={}
 
@@ -67,7 +68,14 @@ def write_data(filaname, data_list):
 
 
 if __name__ == '__main__':
-    clt = Web3(Web3.HTTPProvider('https://godwoken-alphanet-v1.ckbapp.dev'))
+    httpUrl = 'https://godwoken-alphanet-v1.ckbapp.dev'
+    if len(sys.argv)==2 and sys.argv[1] == "testnet":
+        httpUrl = 'https://godwoken-testnet-v1.ckbapp.dev'
+        print("use test net ")
+    else:
+        print("use default net")
+
+    clt = Web3(Web3.HTTPProvider(httpUrl))
 
     while 1:
         # 获取number
