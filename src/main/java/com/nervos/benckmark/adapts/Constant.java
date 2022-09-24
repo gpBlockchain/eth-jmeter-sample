@@ -7,6 +7,9 @@ public class Constant {
     // GetBalanceRequest
     public static String ACCOUNT_SIZE = "account_size";
     public static String DEFAULT_PRIVATE_KEY = "default_private_key";
+    public static String TO = "to";
+    public static String VALUE = "value";
+    public static  String PAYLOAD = "payload";
 
     //GetBalanceRequest  eth_getCode
     public static String DefaultBlockParameterName = "DefaultBlockParameterName";

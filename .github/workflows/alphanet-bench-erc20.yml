@@ -1,8 +1,18 @@
-name: alphanet-bench
+name: alphanet-bench-erc20
 
 on:
   workflow_dispatch:
-
+    inputs:
+      jmeterJmx:
+        type: choice
+        description: Make a choice of jmx
+        required: true
+        options:
+        - alphanet-bench-erc20.jmx
+        - alphanet-bench-logRequest.jmx
+        - alphanet-bench-swap.jmx
+        - testnet-bench-erc20.jmx
+        - testnet-bench-swap.jmx
 
 jobs:
   build:
@@ -28,7 +38,7 @@ jobs:
           python utils/retrieve_block.py & 
       - name: jmeter run
         run:
-          mvn jmeter:jmeter
+          mvn jmeter:jmeter@configuration2 -DjmeterTest=${{ github.event.inputs.jmeterJmx }}
       - name: collect block message
         run: |
           cat block.csv
