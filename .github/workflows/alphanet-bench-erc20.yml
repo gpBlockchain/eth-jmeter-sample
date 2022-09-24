@@ -13,6 +13,13 @@ on:
         - alphanet-bench-swap.jmx
         - testnet-bench-erc20.jmx
         - testnet-bench-swap.jmx
+      rpcUrl:
+        type: choice
+        description: godwoken test net
+        required: true
+        options:
+          - alphanet
+          - testnet
 
 jobs:
   build:
@@ -35,7 +42,7 @@ jobs:
           pip install Web3
       - name: Start  Monit Block Message
         run: 
-          python utils/retrieve_block.py & 
+          python utils/retrieve_block.py ${{ github.event.inputs.rpcUrl }} &
       - name: jmeter run
         run:
           mvn jmeter:jmeter@configuration2 -DjmeterTest=${{ github.event.inputs.jmeterJmx }}
