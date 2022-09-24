@@ -61,12 +61,12 @@
             <groupId>org.web3j</groupId>
             <artifactId>crypto</artifactId>
             <version>5.0.0</version>
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>org.bouncycastle</groupId>-->
-<!--                    <artifactId>bcprov-jdk15on</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
+            <!--            <exclusions>-->
+            <!--                <exclusion>-->
+            <!--                    <groupId>org.bouncycastle</groupId>-->
+            <!--                    <artifactId>bcprov-jdk15on</artifactId>-->
+            <!--                </exclusion>-->
+            <!--            </exclusions>-->
         </dependency>
 
         <dependency>
@@ -80,12 +80,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.bouncycastle</groupId>-->
-<!--            <artifactId>bcprov-jdk15on</artifactId>-->
-<!--            <version>1.49</version>-->
-<!--            &lt;!&ndash;            <scope>compile</scope>&ndash;&gt;-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.bouncycastle</groupId>-->
+        <!--            <artifactId>bcprov-jdk15on</artifactId>-->
+        <!--            <version>1.49</version>-->
+        <!--            &lt;!&ndash;            <scope>compile</scope>&ndash;&gt;-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -183,6 +183,15 @@
                 <artifactId>jmeter-maven-plugin</artifactId>
                 <version>${jmeter.plugin.version}</version>
                 <executions>
+                    <execution>
+                        <id>configuration2</id>
+                        <goals>
+                            <goal>configure</goal>
+                        </goals>
+                        <configuration>
+                            <testFilesIncluded>${jmeterTest}</testFilesIncluded>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>configuration</id>
                         <goals>
