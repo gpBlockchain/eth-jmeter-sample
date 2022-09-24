@@ -13,14 +13,14 @@
         <maven.compiler.target>8</maven.compiler.target>
         <rpcUrl>http://localhost:8024</rpcUrl>
         <BUILD_TAG>${project.version}</BUILD_TAG>
-        <jmeter.plugin.version>3.1.0</jmeter.plugin.version>
+        <jmeter.plugin.version>3.6.1</jmeter.plugin.version>
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
         <project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
         <project.resources.sourceEncoding>${encoding}</project.resources.sourceEncoding>
         <html.report>true</html.report>
+        <jmeterTest>Request</jmeterTest>
     </properties>
-
 
 
     <dependencies>
@@ -61,19 +61,31 @@
             <groupId>org.web3j</groupId>
             <artifactId>crypto</artifactId>
             <version>5.0.0</version>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>org.bouncycastle</groupId>-->
+<!--                    <artifactId>bcprov-jdk15on</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
 
         <dependency>
             <groupId>org.bitcoinj</groupId>
             <artifactId>bitcoinj-core</artifactId>
             <version>0.16.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bouncycastle</groupId>
+                    <artifactId>bcprov-jdk15to18</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.69</version>
-<!--            <scope>compile</scope>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.bouncycastle</groupId>-->
+<!--            <artifactId>bcprov-jdk15on</artifactId>-->
+<!--            <version>1.49</version>-->
+<!--            &lt;!&ndash;            <scope>compile</scope>&ndash;&gt;-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
@@ -144,7 +156,7 @@
                             <mainClass>com.nervos.benckmark.BlockNumRequest</mainClass>
                         </manifest>
                     </archive>
-<!--                    <outputDirectory>../target/*/jmeter/lib/ext</outputDirectory>-->
+                    <!--                    <outputDirectory>../target/*/jmeter/lib/ext</outputDirectory>-->
                 </configuration>
                 <executions>
                     <execution>
@@ -185,7 +197,12 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <excludedArtifacts>
+<!--                        <exclusion>org.bouncycastle:bcprov-jdk15on:1.49</exclusion>-->
+                    </excludedArtifacts>
+<!--                    <overrideRootLogLevel>debug</overrideRootLogLevel>-->
                     <jmeterExtensions>
+<!--                        <artifact>org.example:eth-jmeter-sample:1.0-SNAPSHOT</artifact>-->
                         <artifact>kg.apc:jmeter-plugins-graphs-basic:2.0</artifact>
                         <artifact>kg.apc:jmeter-plugins-graphs-additional:2.0</artifact>
                         <artifact>kg.apc:jmeter-plugins-casutg:2.10</artifact>
@@ -194,7 +211,8 @@
                         <rpcUrl>${rpcUrl}</rpcUrl>
                         <jmeter.reportgenerator.report_title>Shan tonu Example</jmeter.reportgenerator.report_title>
                         <jmeter.reportgenerator.overall_granularity>500</jmeter.reportgenerator.overall_granularity>
-                        <jmeter.reportgenerator.exporter.html.series_filter>^(-success|-failure)?$</jmeter.reportgenerator.exporter.html.series_filter>
+                        <jmeter.reportgenerator.exporter.html.series_filter>^(-success|-failure)?$
+                        </jmeter.reportgenerator.exporter.html.series_filter>
                     </propertiesUser>
                     <jMeterProcessJVMSettings>
                         <xms>15360</xms>
@@ -203,58 +221,14 @@
                             <argument>-XX:MaxMetaspaceSize=1024m</argument>
                         </arguments>
                     </jMeterProcessJVMSettings>
-<!--                    <testFilesExcluded>-->
-<!--                        <excludeJMeterTestFile>login*.jmx</excludeJMeterTestFile>-->
-<!--                    </testFilesExcluded>-->
-<!--                    <resultsFileFormat>xml</resultsFileFormat>-->
+<!--                                        <testFilesExcluded>-->
+<!--                                            <excludeJMeterTestFile>*${jmeterTest}.jmx</excludeJMeterTestFile>-->
+<!--                                        </testFilesExcluded>-->
+                    <!--                    <resultsFileFormat>xml</resultsFileFormat>-->
                     <ignoreResultFailures>true</ignoreResultFailures>
                     <generateReports>${html.report}</generateReports>
                 </configuration>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <artifactId>maven-antrun-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>copy</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <configuration>-->
-<!--                            <tasks>-->
-<!--                                <copy todir=".\target\.*\jmeter\lib\ext">-->
-<!--                                    <fileset dir="${project.build.directory}">-->
-<!--                                        <include name="*.jar"/>-->
-<!--                                    </fileset>-->
-<!--                                </copy>-->
-<!--                            </tasks>-->
-<!--                        </configuration>-->
-<!--                        <goals>-->
-<!--                            <goal>run</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <id>build</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <echo>run chmod in ${basedir}</echo>
-                                <chmod file="${basedir}/src/main/resources/stress.sh" perm="ugo+rx"/>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>

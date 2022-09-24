@@ -11,6 +11,7 @@ import csv
 from web3 import Web3
 import time
 
+blockMsg={}
 
 def get_block_number(gwa):
     origin_number = gwa.eth.block_number
@@ -30,7 +31,7 @@ def get_block(gwa, blocknumber):
 
 
 def parse_block(block):
-    local_timep = int(time.time())
+    local_timep = time.time()
     local_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     block_number = block.number
     txns = [data.hex() for data in block.transactions]
@@ -38,7 +39,11 @@ def parse_block(block):
     timeArray = time.localtime(remote_tp)
     remote_tm = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
     txn_count = len(txns)
-    return [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count, txns]
+    tps = 0
+    if (block_number-1) in blockMsg.keys():
+        tps = txn_count/(local_timep - blockMsg[block_number-1][1])
+    blockMsg[block_number] = [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps]
+    return [local_time, local_timep, remote_tp, remote_tm, block_number, txn_count,tps]
 
 
 def write_data(filaname, data_list):
@@ -63,6 +68,7 @@ def write_data(filaname, data_list):
 
 if __name__ == '__main__':
     clt = Web3(Web3.HTTPProvider('https://godwoken-alphanet-v1.ckbapp.dev'))
+
     while 1:
         # 获取number
         number = get_block_number(clt)
@@ -70,7 +76,7 @@ if __name__ == '__main__':
         blk = get_block(clt, number)
         # 解析block数据
         blokdata = parse_block(blk)
-        with open(r"./block.alphanet.csv", 'a+', newline='') as file:
+        with open(r"./block.csv", 'a+', newline='') as file:
             csv_file = csv.writer(file)
             csv_file.writerow(blokdata)
             file.close()
