@@ -36,7 +36,7 @@ public class BlockNumberRequest extends Web3BasicRequest {
             return false;
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("failed:"+e);
+            System.out.println("failed:" + e);
 
         }
         return false;

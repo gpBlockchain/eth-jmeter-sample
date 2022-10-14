@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-public class GetTransactionByBlockNumberAndIndexRequest extends Web3BasicRequest{
+public class GetTransactionByBlockNumberAndIndexRequest extends Web3BasicRequest {
     List<TxMsg> txMsgs;
     Integer currentSendIdx = 0;
     TxMsg currentTxMsg;
@@ -25,7 +25,7 @@ public class GetTransactionByBlockNumberAndIndexRequest extends Web3BasicRequest
 
     @Override
     public void setupOtherData(JavaSamplerContext context) {
-        txMsgs = SingletonService.getSingletonTxList(web3j,context.getIntParameter(Constant.SIZE));
+        txMsgs = SingletonService.getSingletonTxList(web3j, context.getIntParameter(Constant.SIZE));
     }
 
     @Override

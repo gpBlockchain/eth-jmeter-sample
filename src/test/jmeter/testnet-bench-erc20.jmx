@@ -49,7 +49,7 @@
               </elementProp>
               <elementProp name="size" elementType="Argument">
                 <stringProp name="Argument.name">size</stringProp>
-                <stringProp name="Argument.value">3000</stringProp>
+                <stringProp name="Argument.value">10000</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="to" elementType="Argument">
@@ -64,7 +64,7 @@
               </elementProp>
               <elementProp name="gasPrice" elementType="Argument">
                 <stringProp name="Argument.name">gasPrice</stringProp>
-                <stringProp name="Argument.value">10000000001</stringProp>
+                <stringProp name="Argument.value">60000000001</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
               <elementProp name="value" elementType="Argument">

@@ -13,27 +13,27 @@ import java.util.Map;
 public abstract class Web3BasicRequest extends AbstractJavaSamplerClient {
 
 
-
     private SampleResult result;
     protected Web3j web3j;
     protected Credentials credentials;
 
 
-
     public abstract Arguments getConfigArguments();
+
     public abstract void setupOtherData(JavaSamplerContext context);
 
     public abstract void prepareRun(JavaSamplerContext context);
-    public abstract boolean  run(JavaSamplerContext context);
+
+    public abstract boolean run(JavaSamplerContext context);
 
     @Override
     public Arguments getDefaultParameters() {
         Arguments arguments = new Arguments();
         arguments.addArgument(Constant.RPC_URL, "1");
-        arguments.addArgument(Constant.DEFAULT_PRIVATE_KEY,"0xd326ae3a6708b3f1ad08cefe5a429c313369a98e0a4533c5798be8458d405b31");
+        arguments.addArgument(Constant.DEFAULT_PRIVATE_KEY, "0xd326ae3a6708b3f1ad08cefe5a429c313369a98e0a4533c5798be8458d405b31");
         Arguments newArgument = getConfigArguments();
-        for(Map.Entry<String,String> entry: newArgument.getArgumentsAsMap().entrySet()){
-            arguments.addArgument(entry.getKey(),entry.getValue());
+        for (Map.Entry<String, String> entry : newArgument.getArgumentsAsMap().entrySet()) {
+            arguments.addArgument(entry.getKey(), entry.getValue());
         }
         return arguments;
     }
@@ -53,8 +53,6 @@ public abstract class Web3BasicRequest extends AbstractJavaSamplerClient {
 
         System.out.println("teardownTest");
     }
-
-
 
 
     @Override
